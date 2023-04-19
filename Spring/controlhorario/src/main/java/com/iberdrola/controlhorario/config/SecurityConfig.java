@@ -37,6 +37,7 @@ public class SecurityConfig {
                         e.printStackTrace();
                     }
                 }).saml2Login().defaultSuccessUrl("/home", true);
+        //  Testing
         return http.build();
     }
 }
