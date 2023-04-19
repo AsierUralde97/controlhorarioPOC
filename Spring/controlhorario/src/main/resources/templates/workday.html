@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+  <link rel="stylesheet" href="/css/main.css" />
+  <head>
+    <title>Spring Boot and SAML</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <script>
+      function showDiv(divId, element) {
+        document.getElementById(divId).style.display =
+          element.value == "date" ? "block" : "none";
+
+        if (element.value == "today") {
+          window.location.href = "/home";
+        }
+
+        if (element.value == "month") {
+          window.location.href = "/month";
+        }
+
+        if (element.value == "year") {
+          window.location.href = "/year";
+        }
+      }
+    </script>
+  </head>
+
+  <body>
+    <h1>Workday schedule</h1>
+    <div class="date-input-box">
+      <div class="dropdown">
+        <select
+          name="select-date"
+          id="select-date"
+          onchange="showDiv('hidden_div', this)"
+          aria-placeholder="Select a date"
+        >
+          <option value="" disabled selected hidden>Select a date</option>
+          <option value="today">Today</option>
+          <option value="month">Last month</option>
+          <option value="year">This year</option>
+          <option value="date">Specific date</option>
+        </select>
+      </div>
+      <div class="calendar-input-box" id="hidden_div">
+        <input
+          class="calendar-input-value"
+          type="date"
+          name="date_picker"
+          id="date_picker"
+          value="´setCalDefault();´"
+          field="date_field"
+          required
+        />
+        <script></script>
+
+        <button
+          onclick="window.location.href='/workdayByDate/' + document.getElementById('date_picker').value;"
+          class="btn-calendar"
+          type="submit"
+          th:text="'Search'"
+        >
+          Search
+        </button>
+      </div>
+    </div>
+    <table class="table">
+      <caption hidden>
+        Workday schedule table
+      </caption>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Entry time</th>
+          <th>Exit time</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:if="${workdayList.empty}">
+          <td colspan="3">No workday times registered</td>
+        </tr>
+
+        <tr th:each="workday : ${workdayList}">
+          <td>
+            <span th:text="${#dates.format(workday.entryTime, 'dd/MM/yyyy')}">
+              Date
+            </span>
+          </td>
+          <td>
+            <span th:text="${#dates.format(workday.entryTime, 'HH:mm:ss')}">
+              Entry time
+            </span>
+          </td>
+          <td>
+            <span th:text="${#dates.format(workday.exitTime, 'HH:mm:ss')}">
+              Exit time
+            </span>
+          </td>
+        </tr>
+        <div th:if="${not #lists.isEmpty(workdayList)}">
+          <tr>
+            <td colspan="3">
+              <a
+                class="btn"
+                th:classappend="${workdayList[workdayList.size-1].exitTime} ? entryBtn : exitBtn"
+                th:href="@{/clockInAndOut}"
+                th:text="${workdayList[workdayList.size-1].exitTime} ? 'Clock in' : 'Clock out'"
+              >
+                Clock in/Out
+              </a>
+            </td>
+            <td>
+              <span
+                class="totalTime"
+                th:text="'Total amount of hours worked: ' + ${totalHours}"
+                >Total hours</span
+              >
+            </td>
+          </tr>
+        </div>
+        <div th:if="${#lists.isEmpty(workdayList)}">
+          <tr>
+            <td colspan="3">
+              <a
+                class="btn entryBtn"
+                th:href="@{/clockInAndOut}"
+                th:text="'Clock in'"
+              >
+                Clock in
+              </a>
+            </td>
+          </tr>
+        </div>
+      </tbody>
+    </table>
+  </body>
+</html>

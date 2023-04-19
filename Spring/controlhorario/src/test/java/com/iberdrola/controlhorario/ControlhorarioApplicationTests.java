@@ -1,4 +1,4 @@
-package com.asiertxoo97.controlhorario;
+package com.iberdrola.controlhorario;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

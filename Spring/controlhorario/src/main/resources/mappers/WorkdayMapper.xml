@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.iberdrola.controlhorario.mappers.WorkdayMapper">
+
+    <resultMap id="WordayMap" type="com.iberdrola.controlhorario.domain.Workday">
+        <result column="employee_number" property="employeeNumber" />
+        <result column="entry_time" property="entryTime" />
+        <result column="exit_time" property="exitTime" />
+    </resultMap>
+
+    <insert id="insertWorkday"> INSERT INTO WORKDAY(employee_number, entry_time)
+        VALUES(#{employeeNumber},NOW()) </insert>
+
+    <update
+        id="updateWorkday"> UPDATE WORKDAY SET exit_time=NOW() WHERE
+        employee_number=#{workday.employeeNumber} and entry_time=#{workday.entryTime}</update>
+
+    <select
+        id="obtainCurrentWorkday" resultMap="WordayMap"> SELECT * FROM WORKDAY WHERE employee_number
+        = #{employeeNumber} and (entry_time::DATE)=(NOW()::DATE)</select>
+
+    <select
+        id="obtainWorkdayByDate" resultMap="WordayMap"> SELECT * FROM WORKDAY WHERE employee_number
+        = #{employeeNumber} and (entry_time::DATE)=(#{date}::DATE)</select>
+
+    <select
+        id="obtainWorkdayLastMonth" resultMap="WordayMap"> SELECT * FROM WORKDAY WHERE
+        employee_number = #{employeeNumber} and
+        TO_CHAR((entry_time::DATE),'YYYY-MM')=TO_CHAR((NOW()::DATE),'YYYY-MM')</select>
+
+    <select
+        id="obtainWorkdayLastYear" resultMap="WordayMap"> SELECT * FROM WORKDAY WHERE
+        employee_number = #{employeeNumber} and
+        TO_CHAR((entry_time::DATE),'YYYY')=TO_CHAR((NOW()::DATE),'YYYY') </select>
+
+</mapper>
